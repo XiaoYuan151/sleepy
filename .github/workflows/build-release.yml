@@ -1,0 +1,41 @@
+name: Build & Release Python
+
+permissions:
+  contents: write
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: |
+          pip install pyinstaller asyncio datetime typing httpx
+
+      - name: Build with Python
+        run: |
+          cd client
+          pyinstaller --onefile --noconsole win_device.py
+          pyinstaller --onefile --noconsole win_device_ds.py
+
+      - name: Upload to Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            client/dist/win_device.exe
+            client/dist/win_device_ds.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
