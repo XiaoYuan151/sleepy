@@ -23,7 +23,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pyinstaller asyncio datetime typing httpx
+          pip install pyinstaller asyncio datetime httpx
 
       - name: Build with Python
         run: |
